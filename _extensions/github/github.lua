@@ -120,6 +120,18 @@ function commits(elem)
   return uri, text
 end
 
+function mentions(elem)
+  local uri = nil
+  local text = nil
+  if not citeproc and elem.text:match("^@(%w+)$") then
+    local mention = elem.text:match("^@(%w+)$")
+    uri = "https://github.com/" .. mention
+    text = pandoc.utils.stringify(elem.text)
+  end
+
+  return uri, text
+end
+
 function github(elem)
   uri, text = issues(elem)
   if not is_empty(uri) and not is_empty(text) then
@@ -127,6 +139,11 @@ function github(elem)
   end
 
   uri, text = commits(elem)
+  if not is_empty(uri) and not is_empty(text) then
+    return pandoc.Link(text, uri)
+  end
+
+  uri, text = mentions(elem)
   if not is_empty(uri) and not is_empty(text) then
     return pandoc.Link(text, uri)
   end
