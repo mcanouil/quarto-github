@@ -1,0 +1,78 @@
+---
+title: "Autolinked references and URLs"
+description: |
+  References to URLs, issues, pull requests, and commits are automatically shortened and converted into links.
+page-layout: full
+filters:
+  - github
+repository-name: jlord/sheetsee.js
+format:
+  html:
+    output-file: index
+---
+
+Source: [Autolinked references and URLs - GitHub Docs](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls).
+
+## Usage
+
+You can reference URLs, issues, pull requests, and commits in your content.
+This Quarto extension automatically shortens and converts GitHub references into links.
+
+```yml
+filters:
+  - github
+```
+
+Some references require to define the default repository via `repository-name` YAML key.
+
+```yml
+repository-name: jlord/sheetsee.js
+```
+
+## Issues and pull requests
+
++-------------------------------------------------------------------------------+------------------------------------------------+------------------------------------------------+
+| Reference type                                                                | Raw reference                                  | Short link                                     |
++===============================================================================+================================================+================================================+
+|                                                                               | ```txt                                         |                                                |
+| Issue, discussion, or pull request URL                                        | https://github.com/jlord/sheetsee.js/issues/26 | https://github.com/jlord/sheetsee.js/issues/26 |
+| ***`repository-name` is optional!***                                          | ```                                            |                                                |
++-------------------------------------------------------------------------------+------------------------------------------------+------------------------------------------------+
+|                                                                               | ```txt                                         |                                                |
+| `#` and issue, discussion, or pull request number \                           | #26                                            | #26                                            |
+| ***`repository-name` is required!***                                          | ```                                            |                                                |
++-------------------------------------------------------------------------------+------------------------------------------------+------------------------------------------------+
+|                                                                               | ```txt                                         |                                                |
+| `GH-` and issue, discussion, or pull request number \                         | GH-26                                          | GH-26                                          |
+| ***`repository-name` is required!***                                          | ```                                            |                                                |
++-------------------------------------------------------------------------------+------------------------------------------------+------------------------------------------------+
+|                                                                               | ```txt                                         |                                                |
+| `Username/Repository#` and issue, discussion, or pull request number          | jlord/sheetsee.js#26                           | jlord/sheetsee.js#26                           |
+|                                                                               | ```                                            |                                                |
++-------------------------------------------------------------------------------+------------------------------------------------+------------------------------------------------+
+|                                                                               | ```txt                                         |                                                |
+| `Organization_name/Repository#` and issue, discussion, or pull request number | github-linguist/linguist#4039                  | github-linguist/linguist#4039                  |
+|                                                                               | ```                                            |                                                |
++-------------------------------------------------------------------------------+------------------------------------------------+------------------------------------------------+
+
+## Commit SHAs
+
++--------------------------------------+--------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------+
+| Reference type                       | Raw reference                                                                        | Short link                                                                           |
++======================================+======================================================================================+======================================================================================+
+|                                      | ```txt                                                                               |                                                                                      |
+| Commit URL                           | https://github.com/jlord/sheetsee.js/commit/a5c3785ed8d6a35868bc169f07e40e889087fd2e | https://github.com/jlord/sheetsee.js/commit/a5c3785ed8d6a35868bc169f07e40e889087fd2e |
+| ***`repository-name` is optional!*** | ```                                                                                  |                                                                                      |
++--------------------------------------+--------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------+
+|                                      | ```txt                                                                               |                                                                                      |
+| SHA \                                | a5c3785ed8d6a35868bc169f07e40e889087fd2e                                             | a5c3785ed8d6a35868bc169f07e40e889087fd2e                                             |
+| ***`repository-name` is required!*** | ```                                                                                  |                                                                                      |
++--------------------------------------+--------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------+
+|                                      | ```txt                                                                               |                                                                                      |
+| `User@SHA` \                         | jlord@a5c3785ed8d6a35868bc169f07e40e889087fd2e                                       | ***Not supported!***                                                                 |
+| ***Not supported!***                 | ```                                                                                  |                                                                                      |
++--------------------------------------+--------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------+
+|                                      | ```txt                                                                               |                                                                                      |
+| `Username/Repository@SHA`            | jlord/sheetsee.js@a5c3785ed8d6a35868bc169f07e40e889087fd2e                           | jlord/sheetsee.js@a5c3785ed8d6a35868bc169f07e40e889087fd2e                           |
+|                                      | ```                                                                                  |                                                                                      |
++--------------------------------------+--------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------+
