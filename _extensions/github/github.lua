@@ -26,6 +26,12 @@ local function is_empty(s)
   return s == nil or s == ''
 end
 
+local function github_uri(text, uri)
+  if not is_empty(uri) and not is_empty(text) then
+    return pandoc.Link(text, uri)
+  end
+end
+
 local github_repository = nil
 
 function get_repository(meta)
@@ -75,7 +81,7 @@ function issues(elem)
     end
   end
 
-  return uri, text
+  return github_uri(text, uri)
 end
 
 function commits(elem)
@@ -117,7 +123,7 @@ function commits(elem)
     end
   end
 
-  return uri, text
+  return github_uri(text, uri)
 end
 
 function mentions(elem)
@@ -129,23 +135,27 @@ function mentions(elem)
     text = pandoc.utils.stringify(elem.text)
   end
 
-  return uri, text
+  return github_uri(text, uri)
 end
 
 function github(elem)
-  uri, text = issues(elem)
-  if not is_empty(uri) and not is_empty(text) then
-    return pandoc.Link(text, uri)
+  local link = nil
+  if is_empty(link) then
+    link = issues(elem)
   end
-
-  uri, text = commits(elem)
-  if not is_empty(uri) and not is_empty(text) then
-    return pandoc.Link(text, uri)
+  
+  if is_empty(link) then
+    link = commits(elem)
   end
+  
+  -- if is_empty(link) then
+  --   link = mentions(elem)
+  -- end
 
-  uri, text = mentions(elem)
-  if not is_empty(uri) and not is_empty(text) then
-    return pandoc.Link(text, uri)
+  if is_empty(link) then
+    return elem
+  else
+    return link
   end
 end
 
