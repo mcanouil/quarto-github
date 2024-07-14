@@ -123,7 +123,7 @@ end
 function mentions(elem)
   local uri = nil
   local text = nil
-  if not citeproc and elem.text:match("^@(%w+)$") then
+  if elem.text:match("^@(%w+)$") then
     local mention = elem.text:match("^@(%w+)$")
     uri = "https://github.com/" .. mention
     text = pandoc.utils.stringify(elem.text)
