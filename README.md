@@ -13,7 +13,10 @@ If you're using version control, you will want to check in this directory.
 
 ## Using
 
-Add the following to your YAML header:
+You can reference GitHub issues, pull requests, and commits in your content using GitHub short references.
+This Quarto extension automatically shortens and converts GitHub references into links.
+
+To activate the filter, add the following to your YAML front matter:
 
 ```yaml
 filters:

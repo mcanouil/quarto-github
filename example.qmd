@@ -1,7 +1,7 @@
 ---
 title: "Autolinked references and URLs"
 description: |
-  References to URLs, issues, pull requests, and commits are automatically shortened and converted into links.
+  References to GitHub issues, pull requests, and commits are automatically shortened and converted into links.
 page-layout: full
 filters:
   - github
@@ -15,7 +15,7 @@ Source: [Autolinked references and URLs - GitHub Docs](https://docs.github.com/e
 
 ## Usage
 
-You can reference URLs, issues, pull requests, and commits in your content.
+You can reference GitHub issues, pull requests, and commits in your content using GitHub short references.
 This Quarto extension automatically shortens and converts GitHub references into links.
 
 ```yml
