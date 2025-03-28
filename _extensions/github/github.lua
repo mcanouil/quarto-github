@@ -22,6 +22,8 @@
 # SOFTWARE.
 ]]
 
+local io = require 'io'
+
 local function is_empty(s)
   return s == nil or s == ''
 end
@@ -36,9 +38,27 @@ local github_repository = nil
 
 function get_repository(meta)
   local meta_github_repository = nil
-  if not is_empty(meta['repository-name']) then
+  if is_empty(meta['repository-name']) then
+    local is_windows = package.config:sub(1, 1) == "\\"
+    if is_windows then
+      remote_repository_command = "(git remote get-url origin) -replace '.*[:/](.+?)(\\.git)?$', '$1'"
+    else
+      remote_repository_command = "git remote get-url origin 2>/dev/null | sed -E 's|.*[:/]([^/]+/[^/.]+)(\\.git)?$|\\1|'"
+    end
+    
+    local handle = io.popen(remote_repository_command)
+    
+    if handle then
+      local git_repo = handle:read("*a"):gsub("%s+$", "")
+      handle:close()
+      if not is_empty(git_repo) then
+        meta_github_repository = git_repo
+      end
+    end
+  else
     meta_github_repository = pandoc.utils.stringify(meta['repository-name'])
   end
+
   github_repository = meta_github_repository
   return meta
 end
@@ -143,7 +163,7 @@ function github(elem)
   if is_empty(link) then
     link = issues(elem)
   end
-  
+
   if is_empty(link) then
     link = commits(elem)
   end
