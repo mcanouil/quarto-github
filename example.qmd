@@ -31,13 +31,17 @@ repository-name: jlord/sheetsee.js
 
 ## Mentioning users
 
-+-------------------+---------------+------------+
-| User/Organisation | Raw reference | Short link |
-+===================+===============+============+
-|                   | ```txt        |            |
-| User mention      | @mcanouil     | @mcanouil  |
-|                   | ```           |            |
-+-------------------+---------------+------------+
++----------------------+----------------+-------------+
+| User/Organisation    | Raw reference  | Short link  |
++======================+================+=============+
+|                      | ```txt         |             |
+| User mention         | @mcanouil      | @mcanouil   |
+|                      | ```            |             |
++----------------------+----------------+-------------+
+|                      | ```txt         |             |
+| Organisation mention | @quarto-dev    | @quarto-dev |
+|                      | ```            |             |
++----------------------+----------------+-------------+
 
 ## Issues and pull requests
 
