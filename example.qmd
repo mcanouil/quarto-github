@@ -29,6 +29,16 @@ Some references require to define the default repository via `repository-name` Y
 repository-name: jlord/sheetsee.js
 ```
 
+## Mentioning users
+
++-------------------+---------------+------------+
+| User/Organisation | Raw reference | Short link |
++===================+===============+============+
+|                   | ```txt        |            |
+| User mention      | @mcanouil     | @mcanouil  |
+|                   | ```           |            |
++-------------------+---------------+------------+
+
 ## Issues and pull requests
 
 +-------------------------------------------------------------------------------+------------------------------------------------+------------------------------------------------+

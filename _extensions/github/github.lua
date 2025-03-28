@@ -126,16 +126,16 @@ function commits(elem)
   return github_uri(text, uri)
 end
 
-function mentions(elem)
-  local uri = nil
-  local text = nil
+function mentions_old(elem)
   if elem.text:match("^@(%w+)$") then
-    local mention = elem.text:match("^@(%w+)$")
-    uri = "https://github.com/" .. mention
-    text = pandoc.utils.stringify(elem.text)
+    return github_uri(pandoc.utils.stringify(elem.text), "https://github.com/" .. elem.text:match("^@(%w+)$"))
   end
 
-  return github_uri(text, uri)
+  return elem
+end
+
+function mentions(cite)
+  return pandoc.Link(cite.content, "https://github.com/" .. cite.content[1].text:sub(2))
 end
 
 function github(elem)
@@ -147,10 +147,6 @@ function github(elem)
   if is_empty(link) then
     link = commits(elem)
   end
-  
-  -- if is_empty(link) then
-  --   link = mentions(elem)
-  -- end
 
   if is_empty(link) then
     return elem
@@ -161,5 +157,6 @@ end
 
 return {
   {Meta = get_repository},
-  {Str = github}
+  {Str = github},
+  {Cite = mentions}
 }
