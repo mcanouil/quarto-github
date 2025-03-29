@@ -22,7 +22,8 @@
 # SOFTWARE.
 ]]
 
-local io = require 'io'
+local github_repository = nil
+local references_ids_set = {}
 
 local function is_empty(s)
   return s == nil or s == ''
@@ -33,8 +34,6 @@ local function github_uri(text, uri)
     return pandoc.Link(text, uri)
   end
 end
-
-local github_repository = nil
 
 function get_repository(meta)
   local meta_github_repository = nil
@@ -61,6 +60,25 @@ function get_repository(meta)
 
   github_repository = meta_github_repository
   return meta
+end
+
+function get_references(doc)
+  local references = pandoc.utils.references(doc)
+  
+  for _, reference in ipairs(references) do
+    if reference.id then
+      references_ids_set[reference.id] = true
+    end
+  end
+  return doc
+end
+
+function mentions(cite)
+  if references_ids_set[cite.citations[1].id] then
+    return cite
+  else
+    return github_uri(cite.content, "https://github.com/" .. cite.content[1].text:sub(2))
+  end
 end
 
 function issues(elem)
@@ -146,18 +164,6 @@ function commits(elem)
   return github_uri(text, uri)
 end
 
-function mentions_old(elem)
-  if elem.text:match("^@(%w+)$") then
-    return github_uri(pandoc.utils.stringify(elem.text), "https://github.com/" .. elem.text:match("^@(%w+)$"))
-  end
-
-  return elem
-end
-
-function mentions(cite)
-  return pandoc.Link(cite.content, "https://github.com/" .. cite.content[1].text:sub(2))
-end
-
 function github(elem)
   local link = nil
   if is_empty(link) then
@@ -176,6 +182,7 @@ function github(elem)
 end
 
 return {
+  {Pandoc = get_references},
   {Meta = get_repository},
   {Str = github},
   {Cite = mentions}
