@@ -22,6 +22,9 @@
 # SOFTWARE.
 ]]
 
+local github_repository = nil
+local references_ids_set = {}
+
 local function is_empty(s)
   return s == nil or s == ''
 end
@@ -32,15 +35,50 @@ local function github_uri(text, uri)
   end
 end
 
-local github_repository = nil
-
 function get_repository(meta)
   local meta_github_repository = nil
-  if not is_empty(meta['repository-name']) then
+  if is_empty(meta['repository-name']) then
+    local is_windows = package.config:sub(1, 1) == "\\"
+    if is_windows then
+      remote_repository_command = "(git remote get-url origin) -replace '.*[:/](.+?)(\\.git)?$', '$1'"
+    else
+      remote_repository_command = "git remote get-url origin 2>/dev/null | sed -E 's|.*[:/]([^/]+/[^/.]+)(\\.git)?$|\\1|'"
+    end
+    
+    local handle = io.popen(remote_repository_command)
+    
+    if handle then
+      local git_repo = handle:read("*a"):gsub("%s+$", "")
+      handle:close()
+      if not is_empty(git_repo) then
+        meta_github_repository = git_repo
+      end
+    end
+  else
     meta_github_repository = pandoc.utils.stringify(meta['repository-name'])
   end
+
   github_repository = meta_github_repository
   return meta
+end
+
+function get_references(doc)
+  local references = pandoc.utils.references(doc)
+  
+  for _, reference in ipairs(references) do
+    if reference.id then
+      references_ids_set[reference.id] = true
+    end
+  end
+  return doc
+end
+
+function mentions(cite)
+  if references_ids_set[cite.citations[1].id] then
+    return cite
+  else
+    return github_uri(cite.content, "https://github.com/" .. cite.content[1].text:sub(2))
+  end
 end
 
 function issues(elem)
@@ -126,31 +164,15 @@ function commits(elem)
   return github_uri(text, uri)
 end
 
-function mentions(elem)
-  local uri = nil
-  local text = nil
-  if elem.text:match("^@(%w+)$") then
-    local mention = elem.text:match("^@(%w+)$")
-    uri = "https://github.com/" .. mention
-    text = pandoc.utils.stringify(elem.text)
-  end
-
-  return github_uri(text, uri)
-end
-
 function github(elem)
   local link = nil
   if is_empty(link) then
     link = issues(elem)
   end
-  
+
   if is_empty(link) then
     link = commits(elem)
   end
-  
-  -- if is_empty(link) then
-  --   link = mentions(elem)
-  -- end
 
   if is_empty(link) then
     return elem
@@ -160,6 +182,8 @@ function github(elem)
 end
 
 return {
+  {Pandoc = get_references},
   {Meta = get_repository},
-  {Str = github}
+  {Str = github},
+  {Cite = mentions}
 }
