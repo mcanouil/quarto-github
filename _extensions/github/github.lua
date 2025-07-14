@@ -35,9 +35,29 @@ local function github_uri(text, uri)
   end
 end
 
+local function get_metadata_value(meta, key)
+  -- Check for the new nested structure first: extensions.github.key
+  if meta['extensions'] and meta['extensions']['github'] and meta['extensions']['github'][key] then
+    return pandoc.utils.stringify(meta['extensions']['github'][key])
+  end
+  
+  -- Check for deprecated top-level key and warn
+  if meta[key] then
+    quarto.log.warning("Using '" .. key .. "' directly in metadata is deprecated. " ..
+                      "Please use the following structure instead:\n" ..
+                      "extensions:\n" ..
+                      "  github:\n" ..
+                      "    " .. key .. ": value")
+    return pandoc.utils.stringify(meta[key])
+  end
+  
+  return nil
+end
+
 function get_repository(meta)
-  local meta_github_repository = nil
-  if is_empty(meta['repository-name']) then
+  local meta_github_repository = get_metadata_value(meta, 'repository-name')
+  
+  if is_empty(meta_github_repository) then
     local is_windows = package.config:sub(1, 1) == "\\"
     if is_windows then
       remote_repository_command = "(git remote get-url origin) -replace '.*[:/](.+?)(\\.git)?$', '$1'"
@@ -54,8 +74,6 @@ function get_repository(meta)
         meta_github_repository = git_repo
       end
     end
-  else
-    meta_github_repository = pandoc.utils.stringify(meta['repository-name'])
   end
 
   github_repository = meta_github_repository
@@ -155,7 +173,7 @@ function commits(elem)
   local uri = nil
   local text = nil
   if not is_empty(short_link) and not is_empty(commit_sha) and not is_empty(user_repo) and not is_empty(type) then
-    if type == "commit" and commit_sha:len() == 40 then
+    if type == "commit" and commit_sha and commit_sha:len() == 40 then
       uri = "https://github.com/" .. user_repo .. '/' .. type .. '/' .. commit_sha
       text = pandoc.utils.stringify(short_link)
     end

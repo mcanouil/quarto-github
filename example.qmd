@@ -24,11 +24,23 @@ filters:
     at: post-quarto
 ```
 
-Some references require to define the default repository via `repository-name` YAML key or have an `origin` remote set in your Git configuration.
+Some references require to define the default repository via the extension configuration or have an `origin` remote set in your Git configuration.
+
+```yml
+extensions:
+  github:
+    repository-name: mcanouil/quarto-github
+```
+
+:::: {.callout-warning}
+## Deprecated
+
+The old top-level `repository-name` syntax is deprecated but still supported:
 
 ```yml
 repository-name: mcanouil/quarto-github
 ```
+:::
 
 ## Mentioning users
 
