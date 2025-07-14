@@ -1,4 +1,4 @@
-# Github Extension For Quarto
+# GitHub Extension For Quarto
 
 `github` is an extension for [Quarto](https://quarto.org) to automatically shortens and converts [GitHub references](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls) into links.
 
