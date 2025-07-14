@@ -22,19 +22,34 @@
 # SOFTWARE.
 ]]
 
+--- @type string|nil The GitHub repository name (e.g., "owner/repo")
 local github_repository = nil
+
+--- @type table<string, boolean> Set of reference IDs from the document
 local references_ids_set = {}
 
+--- Check if a string is empty or nil
+--- @param s string|nil The string to check
+--- @return boolean true if the string is nil or empty
 local function is_empty(s)
   return s == nil or s == ''
 end
 
+--- Create a GitHub URI link element
+--- @param text string|nil The link text
+--- @param uri string|nil The URI to link to
+--- @return pandoc.Link|nil A Pandoc Link element or nil if text or uri is empty
 local function github_uri(text, uri)
   if not is_empty(uri) and not is_empty(text) then
-    return pandoc.Link(text, uri)
+    return pandoc.Link({pandoc.Str(text --[[@as string]])}, uri --[[@as string]])
   end
+  return nil
 end
 
+--- Extract metadata value from document meta, supporting both new nested structure and deprecated top-level keys
+--- @param meta table The document metadata table
+--- @param key string The metadata key to retrieve
+--- @return string|nil The metadata value as a string, or nil if not found
 local function get_metadata_value(meta, key)
   -- Check for the new nested structure first: extensions.github.key
   if meta['extensions'] and meta['extensions']['github'] and meta['extensions']['github'][key] then
@@ -56,6 +71,11 @@ local function get_metadata_value(meta, key)
   return nil
 end
 
+--- Get repository name from metadata or git remote
+--- This function extracts the GitHub repository name either from document metadata
+--- or by querying the git remote origin URL
+--- @param meta table The document metadata table
+--- @return table The metadata table (unchanged)
 function get_repository(meta)
   local meta_github_repository = get_metadata_value(meta, 'repository-name')
 
@@ -83,6 +103,11 @@ function get_repository(meta)
   return meta
 end
 
+--- Extract and store reference IDs from the document
+--- This function collects all reference IDs from the document to distinguish
+--- between actual citations and GitHub mentions
+--- @param doc pandoc.Pandoc The Pandoc document
+--- @return pandoc.Pandoc The document (unchanged)
 function get_references(doc)
   local references = pandoc.utils.references(doc)
 
@@ -94,14 +119,29 @@ function get_references(doc)
   return doc
 end
 
+--- Process GitHub mentions in citations
+--- Distinguishes between actual bibliography citations and GitHub @mentions
+--- @param cite pandoc.Cite The citation element
+--- @return pandoc.Cite|pandoc.Link The original citation or a GitHub mention link
 function mentions(cite)
   if references_ids_set[cite.citations[1].id] then
     return cite
   else
-    return github_uri(cite.content, "https://github.com/" .. cite.content[1].text:sub(2))
+    local mention_text = pandoc.utils.stringify(cite.content)
+    local github_link = github_uri(mention_text, "https://github.com/" .. mention_text:sub(2))
+    return github_link or cite
   end
 end
 
+--- Process GitHub issues, pull requests, and discussions
+--- Converts various GitHub reference formats into clickable links
+--- Supported formats:
+--- - #123 (issue in current repo)
+--- - owner/repo#123 (issue in specific repo)
+--- - GH-123 (issue in current repo)
+--- - https://github.com/owner/repo/issues/123 (full URL)
+--- @param elem pandoc.Str The string element to process
+--- @return pandoc.Link|nil A GitHub link or nil if no valid pattern found
 function issues(elem)
   local user_repo = nil
   local issue_number = nil
@@ -143,6 +183,15 @@ function issues(elem)
   return github_uri(text, uri)
 end
 
+--- Process GitHub commit references
+--- Converts various commit reference formats into clickable links
+--- Supported formats:
+--- - 40-character SHA (commit in current repo)
+--- - owner/repo@sha (commit in specific repo)
+--- - username@40-character-sha (commit by user)
+--- - https://github.com/owner/repo/commit/sha (full URL)
+--- @param elem pandoc.Str The string element to process
+--- @return pandoc.Link|nil A GitHub commit link or nil if no valid pattern found
 function commits(elem)
   local user_repo = nil
   local commit_sha = nil
@@ -185,23 +234,33 @@ function commits(elem)
   return github_uri(text, uri)
 end
 
+--- Main GitHub processing function
+--- Attempts to convert string elements into GitHub links by trying different patterns
+--- @param elem pandoc.Str The string element to process
+--- @return pandoc.Str|pandoc.Link The original element or a GitHub link
 function github(elem)
   local link = nil
-  if is_empty(link) then
+  if link == nil then
     link = issues(elem)
   end
 
-  if is_empty(link) then
+  if link == nil then
     link = commits(elem)
   end
 
-  if is_empty(link) then
+  if link == nil then
     return elem
   else
     return link
   end
 end
 
+--- Pandoc filter configuration
+--- Defines the order of filter execution:
+--- 1. Extract references from the document
+--- 2. Get repository information from metadata
+--- 3. Process string elements for GitHub patterns
+--- 4. Process citations for GitHub mentions
 return {
   { Pandoc = get_references },
   { Meta = get_repository },
