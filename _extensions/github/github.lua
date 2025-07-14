@@ -22,6 +22,10 @@
 # SOFTWARE.
 ]]
 
+--- Flag to track if deprecation warning has been shown
+--- @type boolean
+local deprecation_warning_shown = false
+
 --- @type string|nil The GitHub repository name (e.g., "owner/repo")
 local github_repository = nil
 
@@ -58,13 +62,16 @@ local function get_metadata_value(meta, key)
 
   -- Check for deprecated top-level key and warn
   if meta[key] then
-    quarto.log.warning(
-      "Using '" .. key .. "' directly in metadata is deprecated. " ..
-      "Please use the following structure instead:\n" ..
-      "extensions:\n" ..
-      "  github:\n" ..
-      "    " .. key .. ": value"
-    )
+    if not deprecation_warning_shown then
+      quarto.log.warning(
+        "Using '" .. key .. "' directly in metadata is deprecated. " ..
+        "Please use the following structure instead:\n" ..
+        "extensions:\n" ..
+        "  github:\n" ..
+        "    " .. key .. ": value"
+      )
+      deprecation_warning_shown = true
+    end
     return pandoc.utils.stringify(meta[key])
   end
 
