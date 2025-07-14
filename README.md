@@ -35,7 +35,7 @@ extensions:
 > [!WARNING]
 >
 > The old top-level `repository-name` syntax is deprecated but still supported:
-> 
+>
 > ```yml
 > repository-name: jlord/sheetsee.js  # deprecated
 > ```
