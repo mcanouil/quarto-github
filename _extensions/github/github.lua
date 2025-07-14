@@ -40,33 +40,36 @@ local function get_metadata_value(meta, key)
   if meta['extensions'] and meta['extensions']['github'] and meta['extensions']['github'][key] then
     return pandoc.utils.stringify(meta['extensions']['github'][key])
   end
-  
+
   -- Check for deprecated top-level key and warn
   if meta[key] then
-    quarto.log.warning("Using '" .. key .. "' directly in metadata is deprecated. " ..
-                      "Please use the following structure instead:\n" ..
-                      "extensions:\n" ..
-                      "  github:\n" ..
-                      "    " .. key .. ": value")
+    quarto.log.warning(
+      "Using '" .. key .. "' directly in metadata is deprecated. " ..
+      "Please use the following structure instead:\n" ..
+      "extensions:\n" ..
+      "  github:\n" ..
+      "    " .. key .. ": value"
+    )
     return pandoc.utils.stringify(meta[key])
   end
-  
+
   return nil
 end
 
 function get_repository(meta)
   local meta_github_repository = get_metadata_value(meta, 'repository-name')
-  
+
   if is_empty(meta_github_repository) then
     local is_windows = package.config:sub(1, 1) == "\\"
     if is_windows then
       remote_repository_command = "(git remote get-url origin) -replace '.*[:/](.+?)(\\.git)?$', '$1'"
     else
-      remote_repository_command = "git remote get-url origin 2>/dev/null | sed -E 's|.*[:/]([^/]+/[^/.]+)(\\.git)?$|\\1|'"
+      remote_repository_command =
+      "git remote get-url origin 2>/dev/null | sed -E 's|.*[:/]([^/]+/[^/.]+)(\\.git)?$|\\1|'"
     end
-    
+
     local handle = io.popen(remote_repository_command)
-    
+
     if handle then
       local git_repo = handle:read("*a"):gsub("%s+$", "")
       handle:close()
@@ -82,7 +85,7 @@ end
 
 function get_references(doc)
   local references = pandoc.utils.references(doc)
-  
+
   for _, reference in ipairs(references) do
     if reference.id then
       references_ids_set[reference.id] = true
@@ -200,8 +203,8 @@ function github(elem)
 end
 
 return {
-  {Pandoc = get_references},
-  {Meta = get_repository},
-  {Str = github},
-  {Cite = mentions}
+  { Pandoc = get_references },
+  { Meta = get_repository },
+  { Str = github },
+  { Cite = mentions }
 }
