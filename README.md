@@ -24,6 +24,9 @@ filters:
     at: post-quarto
 ```
 
+> [!IMPORTANT]
+> The extension must be run after Quarto's processing (*i.e.*, `at: post-quarto`) to ensure that references (*e.g.*, `@fig-my-beautiful-figure`) are processed first by Quarto, then by the GitHub filter to avoid conflicts.
+
 Some references require a default repository to be set. Use the extension configuration structure:
 
 ```yml

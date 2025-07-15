@@ -24,6 +24,10 @@ filters:
     at: post-quarto
 ```
 
+:::: {.callout-important}
+The extension must be run after Quarto's processing (*i.e.*, `at: post-quarto`) to ensure that references (*e.g.*, `@fig-my-beautiful-figure`) are processed first by Quarto, then by the GitHub filter to avoid conflicts.
+:::
+
 Some references require to define the default repository via the extension configuration or have an `origin` remote set in your Git configuration.
 
 ```yml
