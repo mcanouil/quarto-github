@@ -18,11 +18,21 @@ This Quarto extension automatically shortens and converts GitHub references into
 
 To activate the filter, add the following to your YAML front matter:
 
-```yml
-filters:
-  - path: github
-    at: post-quarto
-```
+- Old:
+
+  ```yml
+  filters:
+    - quarto
+    - github
+  ```
+
+- New (*Not functioning due to a Quarto bug*):
+
+  ```yml
+  filters:
+    - path: github
+      at: post-quarto
+  ```
 
 > [!IMPORTANT]
 > The extension must be run after Quarto's processing (*i.e.*, `at: post-quarto`) to ensure that references (*e.g.*, `@fig-my-beautiful-figure`) are processed first by Quarto, then by the GitHub filter to avoid conflicts.
@@ -32,6 +42,7 @@ Some references require a default repository to be set. Use the extension config
 ```yml
 extensions:
   github:
+    base-url: https://github.com # optional, defaults to https://github.com
     repository-name: jlord/sheetsee.js
 ```
 
@@ -42,6 +53,18 @@ extensions:
 > ```yml
 > repository-name: jlord/sheetsee.js  # deprecated
 > ```
+
+## Configuration
+
+### `base-url`
+
+Specifies the base URL for GitHub or GitHub Enterprise instances.
+Defaults to `https://github.com`.
+
+### `repository-name`
+
+Specifies the default GitHub repository in the format `owner/repository`.
+This is required for references that don't include the repository name (like `#123` or `GH-123`).
 
 ## References
 

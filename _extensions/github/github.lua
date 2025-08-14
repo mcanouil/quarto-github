@@ -29,6 +29,9 @@ local deprecation_warning_shown = false
 --- @type string|nil The GitHub repository name (e.g., "owner/repo")
 local github_repository = nil
 
+--- @type string The base URL for GitHub (defaults to "https://github.com")
+local github_base_url = "https://github.com"
+
 --- @type table<string, boolean> Set of reference IDs from the document
 local references_ids_set = {}
 
@@ -37,6 +40,14 @@ local references_ids_set = {}
 --- @return boolean true if the string is nil or empty
 local function is_empty(s)
   return s == nil or s == ''
+end
+
+--- Escape special pattern characters in a string
+--- @param s string The string to escape
+--- @return string The escaped string
+local function escape_pattern(s)
+  local escaped = s:gsub("([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1")
+  return escaped
 end
 
 --- Create a GitHub URI link element
@@ -84,7 +95,13 @@ end
 --- @param meta table The document metadata table
 --- @return table The metadata table (unchanged)
 function get_repository(meta)
+  local meta_github_base_url = get_metadata_value(meta, 'base-url')
   local meta_github_repository = get_metadata_value(meta, 'repository-name')
+
+  --- Set base URL if provided, otherwise use default
+  if not is_empty(meta_github_base_url) then
+    github_base_url = meta_github_base_url --[[@as string]]
+  end
 
   if is_empty(meta_github_repository) then
     local is_windows = package.config:sub(1, 1) == "\\"
@@ -135,7 +152,7 @@ function mentions(cite)
     return cite
   else
     local mention_text = pandoc.utils.stringify(cite.content)
-    local github_link = github_uri(mention_text, "https://github.com/" .. mention_text:sub(2))
+    local github_link = github_uri(mention_text, github_base_url .. "/" .. mention_text:sub(2))
     return github_link or cite
   end
 end
@@ -146,7 +163,7 @@ end
 --- - #123 (issue in current repo)
 --- - owner/repo#123 (issue in specific repo)
 --- - GH-123 (issue in current repo)
---- - https://github.com/owner/repo/issues/123 (full URL)
+--- - https://example.com/owner/repo/issues/123 (full URL)
 --- @param elem pandoc.Str The string element to process
 --- @return pandoc.Link|nil A GitHub link or nil if no valid pattern found
 function issues(elem)
@@ -169,12 +186,17 @@ function issues(elem)
     user_repo = github_repository
     type = "issues"
     short_link = "#" .. issue_number
-  elseif elem.text:match("^https://github.com/([^/]+/[^/]+)/([^/]+)/(%d+)$") then
-    user_repo, type, issue_number = elem.text:match("^https://github.com/([^/]+/[^/]+)/([^/]+)/(%d+)$")
-    if user_repo == github_repository then
-      short_link = "#" .. issue_number
-    else
-      short_link = user_repo .. "#" .. issue_number
+  else
+    -- Dynamic pattern matching for base URL
+    local escaped_base_url = escape_pattern(github_base_url)
+    local url_pattern = "^" .. escaped_base_url .. "/([^/]+/[^/]+)/([^/]+)/(%d+)$"
+    if elem.text:match(url_pattern) then
+      user_repo, type, issue_number = elem.text:match(url_pattern)
+      if user_repo == github_repository then
+        short_link = "#" .. issue_number
+      else
+        short_link = user_repo .. "#" .. issue_number
+      end
     end
   end
 
@@ -182,7 +204,7 @@ function issues(elem)
   local text = nil
   if not is_empty(short_link) and not is_empty(issue_number) and not is_empty(user_repo) and not is_empty(type) then
     if type == "issues" or type == "discussions" or type == "pull" then
-      uri = "https://github.com/" .. user_repo .. '/' .. type .. '/' .. issue_number
+      uri = github_base_url .. "/" .. user_repo .. '/' .. type .. '/' .. issue_number
       text = pandoc.utils.stringify(short_link)
     end
   end
@@ -196,7 +218,7 @@ end
 --- - 40-character SHA (commit in current repo)
 --- - owner/repo@sha (commit in specific repo)
 --- - username@40-character-sha (commit by user)
---- - https://github.com/owner/repo/commit/sha (full URL)
+--- - https://example.com/owner/repo/commit/sha (full URL)
 --- @param elem pandoc.Str The string element to process
 --- @return pandoc.Link|nil A GitHub commit link or nil if no valid pattern found
 function commits(elem)
@@ -220,12 +242,17 @@ function commits(elem)
       type = "commit"
       short_link = user_repo .. "@" .. commit_sha:sub(1, 7)
     end
-  elseif elem.text:match("^https://github.com/([^/]+/[^/]+)/([^/]+)/(%w+)$") then
-    user_repo, type, commit_sha = elem.text:match("^https://github.com/([^/]+/[^/]+)/([^/]+)/(%w+)$")
-    if user_repo == github_repository then
-      short_link = commit_sha:sub(1, 7)
-    else
-      short_link = user_repo .. "@" .. commit_sha:sub(1, 7)
+  else
+    -- Dynamic pattern matching for base URL
+    local escaped_base_url = escape_pattern(github_base_url)
+    local url_pattern = "^" .. escaped_base_url .. "/([^/]+/[^/]+)/([^/]+)/(%w+)$"
+    if elem.text:match(url_pattern) then
+      user_repo, type, commit_sha = elem.text:match(url_pattern)
+      if user_repo == github_repository then
+        short_link = commit_sha:sub(1, 7)
+      else
+        short_link = user_repo .. "@" .. commit_sha:sub(1, 7)
+      end
     end
   end
 
@@ -233,7 +260,7 @@ function commits(elem)
   local text = nil
   if not is_empty(short_link) and not is_empty(commit_sha) and not is_empty(user_repo) and not is_empty(type) then
     if type == "commit" and commit_sha and commit_sha:len() == 40 then
-      uri = "https://github.com/" .. user_repo .. '/' .. type .. '/' .. commit_sha
+      uri = github_base_url .. "/" .. user_repo .. '/' .. type .. '/' .. commit_sha
       text = pandoc.utils.stringify(short_link)
     end
   end
