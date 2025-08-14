@@ -42,8 +42,8 @@ Some references require a default repository to be set. Use the extension config
 ```yml
 extensions:
   github:
+    base-url: https://github.com # optional, defaults to https://github.com
     repository-name: jlord/sheetsee.js
-    base-url: https://github.com  # optional, defaults to https://github.com
 ```
 
 > [!WARNING]
@@ -58,19 +58,21 @@ extensions:
 
 ### `repository-name`
 
-Specifies the default GitHub repository in the format `owner/repository`. This is required for references that don't include the repository name (like `#123` or `GH-123`).
+Specifies the default GitHub repository in the format `owner/repository`.
+This is required for references that don't include the repository name (like `#123` or `GH-123`).
 
 ### `base-url`
 
-Specifies the base URL for GitHub or GitHub Enterprise instances. Defaults to `https://github.com`.
+Specifies the base URL for GitHub or GitHub Enterprise instances.
+Defaults to `https://github.com`.
 
 For GitHub Enterprise Server installations, you can use:
 
 ```yml
 extensions:
   github:
-    repository-name: myorg/myrepo
     base-url: https://github.mycompany.com
+    repository-name: myorg/myrepo
 ```
 
 ## References

@@ -46,8 +46,8 @@ Some references require to define the default repository via the extension confi
 ```yml
 extensions:
   github:
+    base-url: https://github.com # optional, defaults to https://github.com
     repository-name: mcanouil/quarto-github
-    base-url: https://github.com
 ```
 
 :::: {.callout-warning}
