@@ -4,8 +4,11 @@ description: |
   References to GitHub issues, pull requests, and commits are automatically shortened and converted into links.
 page-layout: full
 filters:
-  - path: github
-    at: post-quarto
+  - quarto
+  - github
+# filters:
+#   - path: github
+#     at: post-quarto
 format:
   html:
     output-file: index
@@ -18,11 +21,21 @@ Source: [Autolinked references and URLs - GitHub Docs](https://docs.github.com/e
 You can reference GitHub issues, pull requests, and commits in your content using GitHub short references.
 This Quarto extension automatically shortens and converts GitHub references into links.
 
-```yml
-filters:
-  - path: github
-    at: post-quarto
-```
+- Old:
+
+  ```yml
+  filters:
+    - quarto
+    - github
+  ```
+
+- New (*Not functioning due to a Quarto bug*):
+
+  ```yml
+  filters:
+    - path: github
+      at: post-quarto
+  ```
 
 :::: {.callout-important}
 The extension must be run after Quarto's processing (*i.e.*, `at: post-quarto`) to ensure that references (*e.g.*, `@fig-my-beautiful-figure`) are processed first by Quarto, then by the GitHub filter to avoid conflicts.
@@ -34,6 +47,7 @@ Some references require to define the default repository via the extension confi
 extensions:
   github:
     repository-name: mcanouil/quarto-github
+    base-url: https://github.com
 ```
 
 :::: {.callout-warning}
