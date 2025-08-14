@@ -18,20 +18,42 @@ This Quarto extension automatically shortens and converts GitHub references into
 
 To activate the filter, add the following to your YAML front matter:
 
-```yaml
+```yml
 filters:
-  - github
+  - path: github
+    at: post-quarto
 ```
 
-Some references require a default repository to be set via the `repository-name` YAML key.
+> [!IMPORTANT]
+> The extension must be run after Quarto's processing (*i.e.*, `at: post-quarto`) to ensure that references (*e.g.*, `@fig-my-beautiful-figure`) are processed first by Quarto, then by the GitHub filter to avoid conflicts.
+
+Some references require a default repository to be set. Use the extension configuration structure:
 
 ```yml
-repository-name: jlord/sheetsee.js
+extensions:
+  github:
+    repository-name: jlord/sheetsee.js
 ```
+
+> [!WARNING]
+>
+> The old top-level `repository-name` syntax is deprecated but still supported:
+>
+> ```yml
+> repository-name: jlord/sheetsee.js  # deprecated
+> ```
 
 ## References
 
 Source: [Autolinked references and URLs - GitHub Docs](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls).
+
+### Mentioning users
+
+| User/Organisation    | Raw reference  | Short link    |
+|----------------------|----------------|---------------|
+| User mention         | `@mcanouil`    | `@mcanouil`   |
+|----------------------|----------------|---------------|
+| Organisation mention | `@quarto-dev`  | `@quarto-dev` |
 
 ### Issues and pull requests
 
