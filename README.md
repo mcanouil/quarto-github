@@ -56,24 +56,15 @@ extensions:
 
 ## Configuration
 
-### `repository-name`
-
-Specifies the default GitHub repository in the format `owner/repository`.
-This is required for references that don't include the repository name (like `#123` or `GH-123`).
-
 ### `base-url`
 
 Specifies the base URL for GitHub or GitHub Enterprise instances.
 Defaults to `https://github.com`.
 
-For GitHub Enterprise Server installations, you can use:
+### `repository-name`
 
-```yml
-extensions:
-  github:
-    base-url: https://github.mycompany.com
-    repository-name: myorg/myrepo
-```
+Specifies the default GitHub repository in the format `owner/repository`.
+This is required for references that don't include the repository name (like `#123` or `GH-123`).
 
 ## References
 

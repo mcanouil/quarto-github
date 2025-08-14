@@ -95,8 +95,8 @@ end
 --- @param meta table The document metadata table
 --- @return table The metadata table (unchanged)
 function get_repository(meta)
-  local meta_github_repository = get_metadata_value(meta, 'repository-name')
   local meta_github_base_url = get_metadata_value(meta, 'base-url')
+  local meta_github_repository = get_metadata_value(meta, 'repository-name')
 
   --- Set base URL if provided, otherwise use default
   if not is_empty(meta_github_base_url) then
