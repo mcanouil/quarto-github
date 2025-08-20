@@ -18,7 +18,7 @@ This Quarto extension automatically shortens and converts GitHub references into
 
 To activate the filter, add the following to your YAML front matter:
 
-- Old:
+- Old (<1.8.21):
 
   ```yml
   filters:
@@ -26,7 +26,7 @@ To activate the filter, add the following to your YAML front matter:
     - github
   ```
 
-- New (*Not functioning due to a Quarto bug*):
+- New (>=1.8.21):
 
   ```yml
   filters:
