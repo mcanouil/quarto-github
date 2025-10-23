@@ -9,10 +9,10 @@
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -40,6 +40,12 @@ local github_base_url = "https://github.com"
 
 --- @type table<string, boolean> Set of reference IDs from the document
 local references_ids_set = {}
+
+--- @type integer Full length of a git commit SHA
+local COMMIT_SHA_FULL_LENGTH = 40
+
+--- @type integer Short length for displaying commit SHA
+local COMMIT_SHA_SHORT_LENGTH = 7
 
 
 
@@ -71,7 +77,7 @@ end
 --- or by querying the git remote origin URL
 --- @param meta table The document metadata table
 --- @return table The metadata table (unchanged)
-function get_repository(meta)
+local function get_repository(meta)
   local meta_github_base_url = get_metadata_value(meta, 'base-url')
   local meta_github_repository = get_metadata_value(meta, 'repository-name')
 
@@ -93,7 +99,7 @@ end
 --- between actual citations and GitHub mentions
 --- @param doc pandoc.Pandoc The Pandoc document
 --- @return pandoc.Pandoc The document (unchanged)
-function get_references(doc)
+local function get_references(doc)
   local references = pandoc.utils.references(doc)
 
   for _, reference in ipairs(references) do
@@ -108,7 +114,7 @@ end
 --- Distinguishes between actual bibliography citations and GitHub @mentions
 --- @param cite pandoc.Cite The citation element
 --- @return pandoc.Cite|pandoc.Link The original citation or a GitHub mention link
-function mentions(cite)
+local function mentions(cite)
   if references_ids_set[cite.citations[1].id] then
     return cite
   else
@@ -127,7 +133,7 @@ end
 --- - https://example.com/owner/repo/issues/123 (full URL)
 --- @param elem pandoc.Str The string element to process
 --- @return pandoc.Link|nil A GitHub link or nil if no valid pattern found
-function issues(elem)
+local function issues(elem)
   local user_repo = nil
   local issue_number = nil
   local type = nil
@@ -163,7 +169,7 @@ function issues(elem)
 
   local uri = nil
   local text = nil
-  if not utils.is_empty(short_link) and not is_empty(issue_number) and not is_empty(user_repo) and not is_empty(type) then
+  if not utils.is_empty(short_link) and not utils.is_empty(issue_number) and not utils.is_empty(user_repo) and not utils.is_empty(type) then
     if type == "issues" or type == "discussions" or type == "pull" then
       uri = github_base_url .. "/" .. user_repo .. '/' .. type .. '/' .. issue_number
       text = pandoc.utils.stringify(short_link)
@@ -182,26 +188,26 @@ end
 --- - https://example.com/owner/repo/commit/sha (full URL)
 --- @param elem pandoc.Str The string element to process
 --- @return pandoc.Link|nil A GitHub commit link or nil if no valid pattern found
-function commits(elem)
+local function commits(elem)
   local user_repo = nil
   local commit_sha = nil
   local type = nil
   local short_link = nil
 
-  if elem.text:match("^(%w+)$") and elem.text:len() == 40 then
+  if elem.text:match("^(%w+)$") and elem.text:len() == COMMIT_SHA_FULL_LENGTH then
     commit_sha = elem.text:match("^(%w+)$")
     user_repo = github_repository
     type = "commit"
-    short_link = commit_sha:sub(1, 7)
+    short_link = commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
   elseif elem.text:match("^([^/]+/[^/@]+)@(%w+)$") then
     user_repo, commit_sha = elem.text:match("^([^/]+/[^/@]+)@(%w+)$")
     type = "commit"
-    short_link = user_repo .. "@" .. commit_sha:sub(1, 7)
+    short_link = user_repo .. "@" .. commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
   elseif elem.text:match("^(%w+)@(%w+)$") then
     user_repo, commit_sha = elem.text:match("^(%w+)@(%w+)$")
-    if commit_sha:len() == 40 then
+    if commit_sha:len() == COMMIT_SHA_FULL_LENGTH then
       type = "commit"
-      short_link = user_repo .. "@" .. commit_sha:sub(1, 7)
+      short_link = user_repo .. "@" .. commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
     end
   else
     -- Dynamic pattern matching for base URL
@@ -210,17 +216,17 @@ function commits(elem)
     if elem.text:match(url_pattern) then
       user_repo, type, commit_sha = elem.text:match(url_pattern)
       if user_repo == github_repository then
-        short_link = commit_sha:sub(1, 7)
+        short_link = commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
       else
-        short_link = user_repo .. "@" .. commit_sha:sub(1, 7)
+        short_link = user_repo .. "@" .. commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
       end
     end
   end
 
   local uri = nil
   local text = nil
-  if not utils.is_empty(short_link) and not is_empty(commit_sha) and not is_empty(user_repo) and not is_empty(type) then
-    if type == "commit" and commit_sha and commit_sha:len() == 40 then
+  if not utils.is_empty(short_link) and not utils.is_empty(commit_sha) and not utils.is_empty(user_repo) and not utils.is_empty(type) then
+    if type == "commit" and commit_sha:len() == COMMIT_SHA_FULL_LENGTH then
       uri = github_base_url .. "/" .. user_repo .. '/' .. type .. '/' .. commit_sha
       text = pandoc.utils.stringify(short_link)
     end
@@ -233,7 +239,7 @@ end
 --- Attempts to convert string elements into GitHub links by trying different patterns
 --- @param elem pandoc.Str The string element to process
 --- @return pandoc.Str|pandoc.Link The original element or a GitHub link
-function github(elem)
+local function github(elem)
   local link = nil
   if link == nil then
     link = issues(elem)
