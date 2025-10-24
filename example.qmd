@@ -4,11 +4,8 @@ description: |
   References to GitHub issues, pull requests, and commits are automatically shortened and converted into links.
 page-layout: full
 filters:
-  - quarto
-  - github
-# filters:
-#   - path: github
-#     at: post-quarto
+  - path: github
+    at: post-quarto
 format:
   html:
     output-file: index
@@ -31,7 +28,9 @@ If you're using version control, you will want to check in this directory.
 You can reference GitHub issues, pull requests, and commits in your content using GitHub short references.
 This Quarto extension automatically shortens and converts GitHub references into links.
 
-- Old:
+To activate the filter, add the following to your YAML front matter:
+
+- Old (<1.8.21):
 
   ```yml
   filters:
@@ -39,7 +38,7 @@ This Quarto extension automatically shortens and converts GitHub references into
     - github
   ```
 
-- New (*Not functioning due to a Quarto bug*):
+- New (>=1.8.21):
 
   ```yml
   filters:
