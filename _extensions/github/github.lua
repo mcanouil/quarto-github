@@ -23,8 +23,8 @@
 ]]
 
 --- Load utils and git modules
-local utils = require(quarto.utils.resolve_path("_modules/utils.lua"):gsub("%.lua$", ""))
-local git = require(quarto.utils.resolve_path("_modules/git.lua"):gsub("%.lua$", ""))
+local utils = require(quarto.utils.resolve_path('_modules/utils.lua'):gsub('%.lua$', ''))
+local git = require(quarto.utils.resolve_path('_modules/git.lua'):gsub('%.lua$', ''))
 
 --- Flag to track if deprecation warning has been shown
 --- @type boolean
@@ -34,7 +34,7 @@ local deprecation_warning_shown = false
 local github_repository = nil
 
 --- @type string The base URL for GitHub (defaults to "https://github.com")
-local github_base_url = "https://github.com"
+local github_base_url = 'https://github.com'
 
 --- @type table<string, boolean> Set of reference IDs from the document
 local references_ids_set = {}
@@ -117,7 +117,7 @@ local function mentions(cite)
     return cite
   else
     local mention_text = pandoc.utils.stringify(cite.content)
-    local github_link = utils.create_link(mention_text, github_base_url .. "/" .. mention_text:sub(2))
+    local github_link = utils.create_link(mention_text, github_base_url .. '/' .. mention_text:sub(2))
     return github_link or cite
   end
 end
@@ -137,30 +137,30 @@ local function issues(elem)
   local type = nil
   local short_link = nil
 
-  if elem.text:match("^#(%d+)$") then
-    issue_number = elem.text:match("^#(%d+)$")
+  if elem.text:match('^#(%d+)$') then
+    issue_number = elem.text:match('^#(%d+)$')
     user_repo = github_repository
-    type = "issues"
-    short_link = "#" .. issue_number
-  elseif elem.text:match("^([^/]+/[^/#]+)#(%d+)$") then
-    user_repo, issue_number = elem.text:match("^([^/]+/[^/#]+)#(%d+)$")
-    type = "issues"
-    short_link = user_repo .. "#" .. issue_number
-  elseif elem.text:match("^GH%-(%d+)$") then
-    issue_number = elem.text:match("^GH%-(%d+)$")
+    type = 'issues'
+    short_link = '#' .. issue_number
+  elseif elem.text:match('^([^/]+/[^/#]+)#(%d+)$') then
+    user_repo, issue_number = elem.text:match('^([^/]+/[^/#]+)#(%d+)$')
+    type = 'issues'
+    short_link = user_repo .. '#' .. issue_number
+  elseif elem.text:match('^GH%-(%d+)$') then
+    issue_number = elem.text:match('^GH%-(%d+)$')
     user_repo = github_repository
-    type = "issues"
-    short_link = "#" .. issue_number
+    type = 'issues'
+    short_link = '#' .. issue_number
   else
     -- Dynamic pattern matching for base URL
     local escaped_base_url = utils.escape_pattern(github_base_url)
-    local url_pattern = "^" .. escaped_base_url .. "/([^/]+/[^/]+)/([^/]+)/(%d+)$"
+    local url_pattern = '^' .. escaped_base_url .. '/([^/]+/[^/]+)/([^/]+)/(%d+)$'
     if elem.text:match(url_pattern) then
       user_repo, type, issue_number = elem.text:match(url_pattern)
       if user_repo == github_repository then
-        short_link = "#" .. issue_number
+        short_link = '#' .. issue_number
       else
-        short_link = user_repo .. "#" .. issue_number
+        short_link = user_repo .. '#' .. issue_number
       end
     end
   end
@@ -168,8 +168,8 @@ local function issues(elem)
   local uri = nil
   local text = nil
   if not utils.is_empty(short_link) and not utils.is_empty(issue_number) and not utils.is_empty(user_repo) and not utils.is_empty(type) then
-    if type == "issues" or type == "discussions" or type == "pull" then
-      uri = github_base_url .. "/" .. user_repo .. '/' .. type .. '/' .. issue_number
+    if type == 'issues' or type == 'discussions' or type == 'pull' then
+      uri = github_base_url .. '/' .. user_repo .. '/' .. type .. '/' .. issue_number
       text = pandoc.utils.stringify(short_link)
     end
   end
@@ -192,31 +192,31 @@ local function commits(elem)
   local type = nil
   local short_link = nil
 
-  if elem.text:match("^(%w+)$") and elem.text:len() == COMMIT_SHA_FULL_LENGTH then
-    commit_sha = elem.text:match("^(%w+)$")
+  if elem.text:match('^(%w+)$') and elem.text:len() == COMMIT_SHA_FULL_LENGTH then
+    commit_sha = elem.text:match('^(%w+)$')
     user_repo = github_repository
-    type = "commit"
+    type = 'commit'
     short_link = commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
-  elseif elem.text:match("^([^/]+/[^/@]+)@(%w+)$") then
-    user_repo, commit_sha = elem.text:match("^([^/]+/[^/@]+)@(%w+)$")
-    type = "commit"
-    short_link = user_repo .. "@" .. commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
-  elseif elem.text:match("^(%w+)@(%w+)$") then
-    user_repo, commit_sha = elem.text:match("^(%w+)@(%w+)$")
+  elseif elem.text:match('^([^/]+/[^/@]+)@(%w+)$') then
+    user_repo, commit_sha = elem.text:match('^([^/]+/[^/@]+)@(%w+)$')
+    type = 'commit'
+    short_link = user_repo .. '@' .. commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
+  elseif elem.text:match('^(%w+)@(%w+)$') then
+    user_repo, commit_sha = elem.text:match('^(%w+)@(%w+)$')
     if commit_sha:len() == COMMIT_SHA_FULL_LENGTH then
-      type = "commit"
-      short_link = user_repo .. "@" .. commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
+      type = 'commit'
+      short_link = user_repo .. '@' .. commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
     end
   else
     -- Dynamic pattern matching for base URL
     local escaped_base_url = utils.escape_pattern(github_base_url)
-    local url_pattern = "^" .. escaped_base_url .. "/([^/]+/[^/]+)/([^/]+)/(%w+)$"
+    local url_pattern = '^' .. escaped_base_url .. '/([^/]+/[^/]+)/([^/]+)/(%w+)$'
     if elem.text:match(url_pattern) then
       user_repo, type, commit_sha = elem.text:match(url_pattern)
       if user_repo == github_repository then
         short_link = commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
       else
-        short_link = user_repo .. "@" .. commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
+        short_link = user_repo .. '@' .. commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
       end
     end
   end
@@ -224,8 +224,8 @@ local function commits(elem)
   local uri = nil
   local text = nil
   if not utils.is_empty(short_link) and not utils.is_empty(commit_sha) and not utils.is_empty(user_repo) and not utils.is_empty(type) then
-    if type == "commit" and commit_sha:len() == COMMIT_SHA_FULL_LENGTH then
-      uri = github_base_url .. "/" .. user_repo .. '/' .. type .. '/' .. commit_sha
+    if type == 'commit' and commit_sha:len() == COMMIT_SHA_FULL_LENGTH then
+      uri = github_base_url .. '/' .. user_repo .. '/' .. type .. '/' .. commit_sha
       text = pandoc.utils.stringify(short_link)
     end
   end
