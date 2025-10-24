@@ -101,3 +101,7 @@ Source: [Autolinked references and URLs - GitHub Docs](https://docs.github.com/e
 ## Example
 
 Here is the source code for a minimal example: [example.qmd](example.qmd).
+
+Output of `example.qmd`:
+
+- [HTML](https://m.canouil.dev/quarto-github/)
