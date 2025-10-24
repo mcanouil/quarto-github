@@ -2,16 +2,17 @@
 
 `github` is an extension for [Quarto](https://quarto.org) to automatically shortens and converts [GitHub references](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls) into links.
 
-## Installing
+## Installation
 
 ```bash
 quarto add mcanouil/quarto-github
 ```
 
 This will install the extension under the `_extensions` subdirectory.
+
 If you're using version control, you will want to check in this directory.
 
-## Using
+## Usage
 
 You can reference GitHub issues, pull requests, and commits in your content using GitHub short references.
 This Quarto extension automatically shortens and converts GitHub references into links.
@@ -70,7 +71,7 @@ This is required for references that don't include the repository name (like `#1
 
 Source: [Autolinked references and URLs - GitHub Docs](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls).
 
-### Mentioning users
+### Mentioning Users
 
 | User/Organisation    | Raw reference  | Short link    |
 |----------------------|----------------|---------------|
@@ -78,7 +79,7 @@ Source: [Autolinked references and URLs - GitHub Docs](https://docs.github.com/e
 |----------------------|----------------|---------------|
 | Organisation mention | `@quarto-dev`  | `@quarto-dev` |
 
-### Issues and pull requests
+### Issues and Pull Requests
 
 | Reference type                                                                             | Raw reference                                    | Short link                      |
 |--------------------------------------------------------------------------------------------|--------------------------------------------------|---------------------------------|
