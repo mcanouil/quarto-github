@@ -26,6 +26,10 @@
 local utils = require(quarto.utils.resolve_path('_modules/utils.lua'):gsub('%.lua$', ''))
 local git = require(quarto.utils.resolve_path('_modules/git.lua'):gsub('%.lua$', ''))
 
+--- Flag to track if superseded warning has been shown
+--- @type boolean
+local superseded_warning_shown = false
+
 --- Flag to track if deprecation warning has been shown
 --- @type boolean
 local deprecation_warning_shown = false
@@ -70,12 +74,28 @@ local function get_metadata_value(meta, key)
   return nil
 end
 
+--- Show superseded extension warning once
+--- This function displays a warning message informing users that this extension
+--- has been superseded by the Git Link extension
+local function show_superseded_warning()
+  if not superseded_warning_shown then
+    quarto.log.warning(
+      'The "GitHub" extension has been superseded by the "Git Link" extension. ' ..
+      'Please update your extension following the instructions at: ' ..
+      'https://github.com/mcanouil/quarto-gitlink?tab=readme-ov-file#installation'
+    )
+    superseded_warning_shown = true
+  end
+end
+
 --- Get repository name from metadata or git remote
 --- This function extracts the GitHub repository name either from document metadata
 --- or by querying the git remote origin URL
 --- @param meta table The document metadata table
 --- @return table The metadata table (unchanged)
 local function get_repository(meta)
+  show_superseded_warning()
+
   local meta_github_base_url = get_metadata_value(meta, 'base-url')
   local meta_github_repository = get_metadata_value(meta, 'repository-name')
 
