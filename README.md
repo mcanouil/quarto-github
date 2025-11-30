@@ -2,6 +2,12 @@
 
 `github` is an extension for [Quarto](https://quarto.org) to automatically shortens and converts [GitHub references](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls) into links.
 
+> [!WARNING]
+> This extension has been superseded by the [Git Link extension](https://github.com/mcanouil/quarto-gitlink).
+> Please update your project to use the new extension.
+> 
+> To install the new extension, see the [installation instructions](https://github.com/mcanouil/quarto-gitlink?tab=readme-ov-file#installation).
+
 ## Installation
 
 ```bash
