@@ -11,7 +11,7 @@
 ## Installation
 
 ```bash
-quarto add mcanouil/quarto-github
+quarto add mcanouil/quarto-github@1.3.1
 ```
 
 This will install the extension under the `_extensions` subdirectory.
