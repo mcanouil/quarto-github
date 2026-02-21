@@ -29,7 +29,7 @@ To install the new extension, see the [installation instructions](https://github
 ## Installation
 
 ```bash
-quarto add mcanouil/quarto-github@1.3.1
+quarto add mcanouil/quarto-github@1.4.0
 ```
 
 This will install the extension under the `_extensions` subdirectory.
@@ -69,7 +69,7 @@ Some references require to define the default repository via the extension confi
 extensions:
   github:
     base-url: https://github.com # optional, defaults to https://github.com
-    repository-name: mcanouil/quarto-github@1.3.1
+    repository-name: mcanouil/quarto-github@1.4.0
 ```
 
 :::: {.callout-warning}
@@ -78,7 +78,7 @@ extensions:
 The old top-level `repository-name` syntax is deprecated but still supported:
 
 ```yml
-repository-name: mcanouil/quarto-github@1.3.1
+repository-name: mcanouil/quarto-github@1.4.0
 ```
 :::
 
@@ -102,7 +102,7 @@ repository-name: mcanouil/quarto-github@1.3.1
 | Reference type                                                                | Raw reference                                      | Short link                                         |
 +===============================================================================+====================================================+====================================================+
 |                                                                               | ```txt                                             |                                                    |
-| Issue, discussion, or pull request URL                                        | https://github.com/mcanouil/quarto-github@1.3.1/issues/3 | https://github.com/mcanouil/quarto-github@1.3.1/issues/3 |
+| Issue, discussion, or pull request URL                                        | https://github.com/mcanouil/quarto-github@1.4.0/issues/3 | https://github.com/mcanouil/quarto-github@1.4.0/issues/3 |
 | ***`repository-name` is optional!***                                          | ```                                                |                                                    |
 +-------------------------------------------------------------------------------+----------------------------------------------------+----------------------------------------------------+
 |                                                                               | ```txt                                             |                                                    |
@@ -114,7 +114,7 @@ repository-name: mcanouil/quarto-github@1.3.1
 | ***`repository-name` is required!***                                          | ```                                                |                                                    |
 +-------------------------------------------------------------------------------+----------------------------------------------------+----------------------------------------------------+
 |                                                                               | ```txt                                             |                                                    |
-| `Username/Repository#` and issue, discussion, or pull request number          | mcanouil/quarto-github@1.3.1#3                           | mcanouil/quarto-github@1.3.1#3                           |
+| `Username/Repository#` and issue, discussion, or pull request number          | mcanouil/quarto-github@1.4.0#3                           | mcanouil/quarto-github@1.4.0#3                           |
 |                                                                               | ```                                                |                                                    |
 +-------------------------------------------------------------------------------+----------------------------------------------------+----------------------------------------------------+
 |                                                                               | ```txt                                             |                                                    |
@@ -128,7 +128,7 @@ repository-name: mcanouil/quarto-github@1.3.1
 | Reference type                       | Raw reference                                                                             | Short link                                                                                |
 +======================================+===========================================================================================+===========================================================================================+
 |                                      | ```txt                                                                                    |                                                                                           |
-| Commit URL                           | https://github.com/mcanouil/quarto-github@1.3.1/commit/0b2eb553779f0a7cd56d59c2ec102b8bb643e9c3 | https://github.com/mcanouil/quarto-github@1.3.1/commit/0b2eb553779f0a7cd56d59c2ec102b8bb643e9c3 |
+| Commit URL                           | https://github.com/mcanouil/quarto-github@1.4.0/commit/0b2eb553779f0a7cd56d59c2ec102b8bb643e9c3 | https://github.com/mcanouil/quarto-github@1.4.0/commit/0b2eb553779f0a7cd56d59c2ec102b8bb643e9c3 |
 |                                      | ```                                                                                       |                                                                                           |
 +--------------------------------------+-------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------+
 |                                      | ```txt                                                                                    |                                                                                           |
