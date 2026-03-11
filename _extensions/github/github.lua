@@ -3,9 +3,10 @@
 --- @copyright 2026 Mickaël Canouil
 --- @author Mickaël Canouil
 
---- Load utils and git modules
+--- Load utils, git, and schema modules
 local utils = require(quarto.utils.resolve_path('_modules/utils.lua'):gsub('%.lua$', ''))
 local git = require(quarto.utils.resolve_path('_modules/git.lua'):gsub('%.lua$', ''))
+local schema = require(quarto.utils.resolve_path('_modules/schema.lua'):gsub('%.lua$', ''))
 
 --- Flag to track if superseded warning has been shown
 --- @type boolean
@@ -76,6 +77,7 @@ end
 --- @return table The metadata table (unchanged)
 local function get_repository(meta)
   show_superseded_warning()
+  schema.validate_options(meta, 'github', quarto.utils.resolve_path('_schema.yml'))
 
   local meta_github_base_url = get_metadata_value(meta, 'base-url')
   local meta_github_repository = get_metadata_value(meta, 'repository-name')
