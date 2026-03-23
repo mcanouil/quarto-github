@@ -3,8 +3,10 @@
 --- @copyright 2026 Mickaël Canouil
 --- @author Mickaël Canouil
 
---- Load utils and git modules
-local utils = require(quarto.utils.resolve_path('_modules/utils.lua'):gsub('%.lua$', ''))
+--- Load modules
+local str = require(quarto.utils.resolve_path('_modules/string.lua'):gsub('%.lua$', ''))
+local meta_mod = require(quarto.utils.resolve_path('_modules/metadata.lua'):gsub('%.lua$', ''))
+local pdoc = require(quarto.utils.resolve_path('_modules/pandoc-helpers.lua'):gsub('%.lua$', ''))
 local git = require(quarto.utils.resolve_path('_modules/git.lua'):gsub('%.lua$', ''))
 
 --- Flag to track if superseded warning has been shown
@@ -38,7 +40,7 @@ local COMMIT_SHA_SHORT_LENGTH = 7
 --- @return string|nil The metadata value as a string, or nil if not found
 local function get_metadata_value(meta, key)
   -- Check for the new nested structure first: extensions.github.key
-  local meta_value = utils.get_metadata_value(meta, 'github', key)
+  local meta_value = meta_mod.get_metadata_value(meta, 'github', key)
   if meta_value then
     return meta_value
   end
@@ -46,7 +48,7 @@ local function get_metadata_value(meta, key)
   -- Check for deprecated top-level key and warn
   if meta[key] then
     local value
-    value, deprecation_warning_shown = utils.check_deprecated_config(meta, 'github', key, deprecation_warning_shown)
+    value, deprecation_warning_shown = meta_mod.check_deprecated_config(meta, 'github', key, deprecation_warning_shown)
     if value then
       return value
     end
@@ -81,11 +83,11 @@ local function get_repository(meta)
   local meta_github_repository = get_metadata_value(meta, 'repository-name')
 
   --- Set base URL if provided, otherwise use default
-  if not utils.is_empty(meta_github_base_url) then
+  if not str.is_empty(meta_github_base_url) then
     github_base_url = meta_github_base_url --[[@as string]]
   end
 
-  if utils.is_empty(meta_github_repository) then
+  if str.is_empty(meta_github_repository) then
     meta_github_repository = git.get_repository()
   end
 
@@ -118,7 +120,7 @@ local function mentions(cite)
     return cite
   else
     local mention_text = pandoc.utils.stringify(cite.content)
-    local github_link = utils.create_link(mention_text, github_base_url .. '/' .. mention_text:sub(2))
+    local github_link = pdoc.create_link(mention_text, github_base_url .. '/' .. mention_text:sub(2))
     return github_link or cite
   end
 end
@@ -154,7 +156,7 @@ local function issues(elem)
     short_link = '#' .. issue_number
   else
     -- Dynamic pattern matching for base URL
-    local escaped_base_url = utils.escape_pattern(github_base_url)
+    local escaped_base_url = str.escape_pattern(github_base_url)
     local url_pattern = '^' .. escaped_base_url .. '/([^/]+/[^/]+)/([^/]+)/(%d+)$'
     if elem.text:match(url_pattern) then
       user_repo, type, issue_number = elem.text:match(url_pattern)
@@ -168,14 +170,14 @@ local function issues(elem)
 
   local uri = nil
   local text = nil
-  if not utils.is_empty(short_link) and not utils.is_empty(issue_number) and not utils.is_empty(user_repo) and not utils.is_empty(type) then
+  if not str.is_empty(short_link) and not str.is_empty(issue_number) and not str.is_empty(user_repo) and not str.is_empty(type) then
     if type == 'issues' or type == 'discussions' or type == 'pull' then
       uri = github_base_url .. '/' .. user_repo .. '/' .. type .. '/' .. issue_number
       text = pandoc.utils.stringify(short_link)
     end
   end
 
-  return utils.create_link(text, uri)
+  return pdoc.create_link(text, uri)
 end
 
 --- Process GitHub commit references
@@ -210,7 +212,7 @@ local function commits(elem)
     end
   else
     -- Dynamic pattern matching for base URL
-    local escaped_base_url = utils.escape_pattern(github_base_url)
+    local escaped_base_url = str.escape_pattern(github_base_url)
     local url_pattern = '^' .. escaped_base_url .. '/([^/]+/[^/]+)/([^/]+)/(%w+)$'
     if elem.text:match(url_pattern) then
       user_repo, type, commit_sha = elem.text:match(url_pattern)
@@ -224,14 +226,14 @@ local function commits(elem)
 
   local uri = nil
   local text = nil
-  if not utils.is_empty(short_link) and not utils.is_empty(commit_sha) and not utils.is_empty(user_repo) and not utils.is_empty(type) then
+  if not str.is_empty(short_link) and not str.is_empty(commit_sha) and not str.is_empty(user_repo) and not str.is_empty(type) then
     if type == 'commit' and commit_sha:len() == COMMIT_SHA_FULL_LENGTH then
       uri = github_base_url .. '/' .. user_repo .. '/' .. type .. '/' .. commit_sha
       text = pandoc.utils.stringify(short_link)
     end
   end
 
-  return utils.create_link(text, uri)
+  return pdoc.create_link(text, uri)
 end
 
 --- Main GitHub processing function
