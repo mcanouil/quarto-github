@@ -23,7 +23,7 @@ end
 --- @return string|nil The repository name (e.g., "owner/repo") or nil if not found
 --- @usage local repo = M.get_repository()
 function M.get_repository()
-  local is_windows = package.config:sub(1, 1) == "\\"
+  local is_windows = package.config:sub(1, 1) == '\\'
   local remote_repository_command
 
   if is_windows then
@@ -34,7 +34,7 @@ function M.get_repository()
 
   local handle = io.popen(remote_repository_command)
   if handle then
-    local git_repo = handle:read("*a"):gsub("%s+$", "")
+    local git_repo = handle:read('*a'):gsub('%s+$', '')
     handle:close()
     if not is_empty(git_repo) then
       return git_repo
