@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### Documentation
+
+- docs: Add a documentation website under `docs/`, built on the `atelier` project type and published to <https://m.canouil.dev/quarto-github/>, leading with the supersession by Git Link.
+- docs: Record that a reference is only recognised when a space follows it, so `#26,` and `#26.` are left as plain text.
+- docs: Record that the deprecated top-level `repository-name` is not read; only `extensions.github.repository-name` is.
+- docs: Trim `README.md` to a landing page pointing at the website, and `example.qmd` to a short starting point to copy.
+- docs: Add the Pages workflow, which renders `docs/` on pull requests and deploys it from the release tag.
+- docs: Add the Quarto Extensions Updates workflow, scanning `docs` for the website's own dependencies.
+
 ## 1.5.1 (2026-04-15)
 
 ### Refactoring

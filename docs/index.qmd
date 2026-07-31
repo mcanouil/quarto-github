@@ -1,0 +1,100 @@
+---
+title: "GitHub"
+subtitle: "GitHub references, shortened into links."
+description: "What the github extension did, why it is superseded by Git Link, and how to move across."
+authors:
+  - name: "Mickaël CANOUIL, _Ph.D._"
+    orcid: "0000-0002-3396-4549"
+    url: "https://mickael.canouil.fr"
+---
+
+::: {.callout-warning}
+## Superseded by Git Link
+
+This extension is no longer developed.
+[Git Link](https://m.canouil.dev/quarto-gitlink) replaces it and does the same job for GitHub, GitLab, Bitbucket, and other forges, alongside a repository widget and other features.
+
+These pages document `github` for the projects still using it, and describe the move.
+:::
+
+GitHub renders `#26` in an issue comment as a link to issue 26, and `a5c3785` as a link to that commit.
+Write the same thing in a Quarto document and you get the literal text.
+
+`github` filled that gap: it recognised the same reference forms GitHub does and turned them into links, shortening full URLs on the way.
+
+## Moving to Git Link
+
+```bash
+quarto remove mcanouil/quarto-github
+quarto add mcanouil/quarto-gitlink
+```
+
+The configuration changes shape:
+
+```yaml
+# github
+extensions:
+  github:
+    repository-name: jlord/sheetsee.js
+    base-url: https://github.com
+```
+
+```yaml
+# gitlink
+extensions:
+  gitlink:
+    repository: jlord/sheetsee.js
+    platform: github
+```
+
+Git Link's own documentation covers the rest: <https://m.canouil.dev/quarto-gitlink>.
+
+## Installation
+
+Still available, for projects that have not moved yet:
+
+```bash
+quarto add {{< var extension.reference >}}
+```
+
+This will install the extension under the `_extensions` subdirectory.
+If you are using version control, you will want to check in this directory.
+
+## Quick start
+
+```yaml
+filters:
+  - path: github
+    at: post-quarto
+extensions:
+  github:
+    repository-name: jlord/sheetsee.js
+```
+
+Then write references as you would in a GitHub comment:
+
+```markdown
+Fixed in #26 and in jlord/sheetsee.js#26 as well
+```
+
+Which renders as: Fixed in #26 and in jlord/sheetsee.js#26 as well.
+
+::: {.callout-caution}
+A reference has to be followed by a space.
+`#26,` and `#26.` are left as plain text, so a reference at the end of a sentence needs rewording.
+:::
+
+See the [Reference](reference.qmd) for every form it recognises, and the [Examples](examples.qmd) for each of them rendered.
+
+## Where it works
+
+Every output format.
+The filter rewrites the document before any writer runs, so the links survive into PDF and Word as well as HTML.
+
+## Links
+
+- [Git Link](https://m.canouil.dev/quarto-gitlink), the replacement.
+- [Reference](reference.qmd) for every reference form.
+- [Examples](examples.qmd) for rendered output.
+- [Changelog](changelog.qmd) for what each release changed.
+- [Source and issues](https://github.com/mcanouil/quarto-github) on GitHub.

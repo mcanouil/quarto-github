@@ -1,0 +1,93 @@
+---
+title: "Reference"
+subtitle: "Every reference form the github extension recognises."
+description: "The complete github configuration: the two options, every issue, pull request, and commit form it shortens, and the punctuation limitation."
+---
+
+::: {.callout-warning}
+This extension is superseded by [Git Link](https://m.canouil.dev/quarto-gitlink).
+These pages exist for projects that have not moved yet.
+:::
+
+## Enabling the filter
+
+```yaml
+filters:
+  - path: github
+    at: post-quarto
+```
+
+::: {.callout-important}
+`post-quarto` is required.
+Quarto's own cross-references, `@fig-something` among them, have to be resolved before this filter looks at the text, or the two collide.
+:::
+
+On Quarto older than 1.8.21 the filter was ordered by hand instead:
+
+```yaml
+filters:
+  - quarto
+  - github
+```
+
+## Options
+
+```yaml
+extensions:
+  github:
+    repository-name: jlord/sheetsee.js
+    base-url: https://github.com
+```
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `repository-name` | string | detected from the git remote | The default repository, as `owner/repository`. Required for any form that does not name one. |
+| `base-url` | string | `https://github.com` | The base URL, for a GitHub Enterprise instance. |
+
+: Extension options. {.striped .hover tbl-colwidths="[20,12,24,44]"}
+
+::: {.callout-warning}
+The deprecated top-level `repository-name` is documented as still supported, and is not: only the form under `extensions.github` is read.
+:::
+
+## Issues, pull requests, and discussions
+
+| Written | Rendered as | Needs `repository-name` |
+| --- | --- | --- |
+| `https://github.com/jlord/sheetsee.js/issues/26` | `jlord/sheetsee.js#26` | No |
+| `#26` | `#26` | Yes |
+| `GH-26` | `#26` | Yes |
+| `jlord/sheetsee.js#26` | `jlord/sheetsee.js#26` | No |
+| `github-linguist/linguist#4039` | `github-linguist/linguist#4039` | No |
+
+: Issue and pull request forms. {.striped .hover tbl-colwidths="[44,32,24]"}
+
+The same numbering covers issues, pull requests, and discussions, exactly as it does on GitHub.
+
+## Commits
+
+| Written | Rendered as | Needs `repository-name` |
+| --- | --- | --- |
+| `https://github.com/jlord/sheetsee.js/commit/a5c3785…` | `jlord/sheetsee.js@a5c3785` | No |
+| A bare 40-character SHA | `a5c3785` | Yes |
+| `jlord/sheetsee.js@a5c3785…` | `jlord/sheetsee.js@a5c3785` | No |
+| `jlord@a5c3785…` | Not recognised | |
+
+: Commit forms. {.striped .hover tbl-colwidths="[44,32,24]"}
+
+## Mentions
+
+`@mcanouil` and `@quarto-dev` become links to those GitHub profiles, whether they belong to a person or an organisation.
+
+## Limitations
+
+::: {.callout-caution}
+A reference must be followed by a space or end the paragraph.
+`#26,` and `#26.` are left as plain text, so a reference at the end of a sentence, or before a comma, is not linked.
+:::
+
+- The forms above are the whole set. Anything GitHub recognises and this list does not is left alone.
+- `User@SHA` is not supported, matching the note in GitHub's own documentation that it is ambiguous.
+- The extension is no longer developed. [Git Link](https://m.canouil.dev/quarto-gitlink) covers the same ground for several forges.
+
+Source for the reference forms: [Autolinked references and URLs](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls) in the GitHub documentation.
