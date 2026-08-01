@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.6.0 (2026-08-01)
+
 ### Documentation
 
 - docs: Add a documentation website under `docs/`, built on the `atelier` project type and published to <https://m.canouil.dev/quarto-github/>, leading with the supersession by Git Link.
