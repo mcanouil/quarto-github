@@ -47,33 +47,39 @@ extensions:
 : Extension options. {.striped .hover tbl-colwidths="[20,12,24,44]"}
 
 ::: {.callout-warning}
-The deprecated top-level `repository-name` is documented as still supported, and is not: only the form under `extensions.github` is read.
+Both options are read from `extensions.github` only.
+The top-level `repository-name` and `base-url` keys that older versions accepted, and the `github-` prefixed keys named in the extension's schema, have no effect.
 :::
+
+Where the tables below say a default repository is needed, either `repository-name` or a detected git remote will do.
 
 ## Issues, pull requests, and discussions
 
-| Written | Rendered as | Needs `repository-name` |
+| Written | Rendered as | Needs a default repository |
 | --- | --- | --- |
-| `https://github.com/jlord/sheetsee.js/issues/26` | `jlord/sheetsee.js#26` | No |
 | `#26` | `#26` | Yes |
 | `GH-26` | `#26` | Yes |
 | `jlord/sheetsee.js#26` | `jlord/sheetsee.js#26` | No |
 | `github-linguist/linguist#4039` | `github-linguist/linguist#4039` | No |
+| `https://github.com/jlord/sheetsee.js/issues/26` | `#26` when the URL names the default repository, `jlord/sheetsee.js#26` otherwise | No |
 
-: Issue and pull request forms. {.striped .hover tbl-colwidths="[44,32,24]"}
+: Issue and pull request forms. {.striped .hover tbl-colwidths="[36,40,24]"}
 
-The same numbering covers issues, pull requests, and discussions, exactly as it does on GitHub.
+`#26` and `GH-26` always build an issues URL, whatever the number turns out to belong to.
+A full URL keeps whichever of `issues`, `pull`, or `discussions` it was written with.
 
 ## Commits
 
-| Written | Rendered as | Needs `repository-name` |
+| Written | Rendered as | Needs a default repository |
 | --- | --- | --- |
-| `https://github.com/jlord/sheetsee.js/commit/a5c3785…` | `jlord/sheetsee.js@a5c3785` | No |
 | A bare 40-character SHA | `a5c3785` | Yes |
 | `jlord/sheetsee.js@a5c3785…` | `jlord/sheetsee.js@a5c3785` | No |
-| `jlord@a5c3785…` | Not recognised | |
+| `https://github.com/jlord/sheetsee.js/commit/a5c3785…` | `a5c3785` when the URL names the default repository, `jlord/sheetsee.js@a5c3785` otherwise | No |
 
-: Commit forms. {.striped .hover tbl-colwidths="[44,32,24]"}
+: Commit forms. {.striped .hover tbl-colwidths="[36,40,24]"}
+
+Only a full 40-character SHA is recognised.
+A short SHA is left as plain text, since it cannot be told apart from an ordinary word.
 
 ## Mentions
 
@@ -86,8 +92,15 @@ A reference must be followed by a space or end the paragraph.
 `#26,` and `#26.` are left as plain text, so a reference at the end of a sentence, or before a comma, is not linked.
 :::
 
+::: {.callout-caution}
+`user@SHA`, the form GitHub uses for a commit attributed to a person, is matched but not handled.
+`jlord@a5c3785…` becomes a link to `https://github.com/jlord/commit/a5c3785…`, which names no repository and does not resolve.
+Write `owner/repository@SHA` instead.
+The form is only matched when the name before the `@` is alphanumeric, so a name carrying a hyphen is left alone.
+:::
+
 - The forms above are the whole set. Anything GitHub recognises and this list does not is left alone.
-- `User@SHA` is not supported, matching the note in GitHub's own documentation that it is ambiguous.
+- Every render reports that the extension is superseded. The warning is emitted once per document and does not stop the render.
 - The extension is no longer developed. [Git Link](https://m.canouil.dev/quarto-gitlink) covers the same ground for several forges.
 
 Source for the reference forms: [Autolinked references and URLs](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls) in the GitHub documentation.

@@ -35,15 +35,20 @@ A full URL is shortened as well:
 
 `https://github.com/jlord/sheetsee.js/issues/26` becomes https://github.com/jlord/sheetsee.js/issues/26 .
 
+That URL names the configured repository, so the repository drops out of the link text.
+A URL naming another repository keeps it: `https://github.com/github-linguist/linguist/issues/4039` becomes https://github.com/github-linguist/linguist/issues/4039 .
+
 ## Commits
 
 | Source | Renders as |
 | --- | --- |
+| `a5c3785ed8d6a35868bc169f07e40e889087fd2e` | a5c3785ed8d6a35868bc169f07e40e889087fd2e |
 | `jlord/sheetsee.js@a5c3785ed8d6a35868bc169f07e40e889087fd2e` | jlord/sheetsee.js@a5c3785ed8d6a35868bc169f07e40e889087fd2e |
 
 : Commit forms. {.striped .hover tbl-colwidths="[50,50]"}
 
-A forty-character SHA on its own is shortened to seven characters and linked against the configured repository.
+A forty-character SHA is shortened to seven characters for display, and the link keeps the whole of it.
+The bare form is linked against the configured repository; the second form names its own.
 
 ## Mentions
 
