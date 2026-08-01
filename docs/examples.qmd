@@ -1,0 +1,73 @@
+---
+title: "Examples"
+subtitle: "Every reference form, rendered."
+description: "Each GitHub reference form linked by the extension, with the source alongside the result."
+---
+
+::: {.callout-warning}
+This extension is superseded by [Git Link](https://m.canouil.dev/quarto-gitlink).
+:::
+
+Every reference below is linked by the filter as this page is rendered.
+The site sets the default repository in `_quarto.yml`:
+
+```yaml
+extensions:
+  github:
+    repository-name: jlord/sheetsee.js
+    base-url: https://github.com
+```
+
+## Issues and pull requests
+
+| Source | Renders as |
+| --- | --- |
+| `#26` | #26 |
+| `GH-26` | GH-26 |
+| `jlord/sheetsee.js#26` | jlord/sheetsee.js#26 |
+| `github-linguist/linguist#4039` | github-linguist/linguist#4039 |
+
+: Issue and pull request forms. {.striped .hover tbl-colwidths="[50,50]"}
+
+The first two need the configured `repository-name`; the last two name their own.
+
+A full URL is shortened as well:
+
+`https://github.com/jlord/sheetsee.js/issues/26` becomes https://github.com/jlord/sheetsee.js/issues/26 .
+
+That URL names the configured repository, so the repository drops out of the link text.
+A URL naming another repository keeps it: `https://github.com/github-linguist/linguist/issues/4039` becomes https://github.com/github-linguist/linguist/issues/4039 .
+
+## Commits
+
+| Source | Renders as |
+| --- | --- |
+| `a5c3785ed8d6a35868bc169f07e40e889087fd2e` | a5c3785ed8d6a35868bc169f07e40e889087fd2e |
+| `jlord/sheetsee.js@a5c3785ed8d6a35868bc169f07e40e889087fd2e` | jlord/sheetsee.js@a5c3785ed8d6a35868bc169f07e40e889087fd2e |
+
+: Commit forms. {.striped .hover tbl-colwidths="[50,50]"}
+
+A forty-character SHA is shortened to seven characters for display, and the link keeps the whole of it.
+The bare form is linked against the configured repository; the second form names its own.
+
+## Mentions
+
+`@mcanouil` renders as @mcanouil and `@quarto-dev` as @quarto-dev , each linking to the profile.
+
+## The punctuation limitation
+
+A reference is only recognised when a space follows it.
+
+| Source | Result |
+| --- | --- |
+| `see #26 here` | see #26 here |
+| `see #26, here` | see #26, here |
+| `ends with #26.` | ends with #26. |
+
+: Punctuation immediately after a reference stops it being recognised. {.striped .hover tbl-colwidths="[40,60]"}
+
+Reword rather than fight it, or move to [Git Link](https://m.canouil.dev/quarto-gitlink), which does not have this limitation.
+
+## Source
+
+The repository ships a short, standalone starting point you can copy: [`example.qmd`](https://github.com/mcanouil/quarto-github/blob/main/example.qmd).

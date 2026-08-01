@@ -1,11 +1,11 @@
 # GitHub Extension For Quarto
 
-`github` is an extension for [Quarto](https://quarto.org) to automatically shortens and converts [GitHub references](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls) into links.
+`github` is an extension for [Quarto](https://quarto.org) to automatically shorten and convert [GitHub references](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls) into links.
 
 > [!WARNING]
 > This extension has been superseded by the [Git Link extension](https://github.com/mcanouil/quarto-gitlink).
 > Please update your project to use the new extension.
-> 
+>
 > To install the new extension, see the [installation instructions](https://github.com/mcanouil/quarto-gitlink?tab=readme-ov-file#installation).
 
 ## Installation
@@ -18,96 +18,12 @@ This will install the extension under the `_extensions` subdirectory.
 
 If you're using version control, you will want to check in this directory.
 
-## Usage
+## Documentation
 
-You can reference GitHub issues, pull requests, and commits in your content using GitHub short references.
-This Quarto extension automatically shortens and converts GitHub references into links.
+The full documentation lives at <https://m.canouil.dev/quarto-github/>: every reference form it recognises, the two options, and how to move to Git Link.
 
-To activate the filter, add the following to your YAML front matter:
+[`example.qmd`](example.qmd) is a short, standalone starting point you can copy.
 
-- Old (<1.8.21):
+## Licence
 
-  ```yml
-  filters:
-    - quarto
-    - github
-  ```
-
-- New (>=1.8.21):
-
-  ```yml
-  filters:
-    - path: github
-      at: post-quarto
-  ```
-
-> [!IMPORTANT]
-> The extension must be run after Quarto's processing (*i.e.*, `at: post-quarto`) to ensure that references (*e.g.*, `@fig-my-beautiful-figure`) are processed first by Quarto, then by the GitHub filter to avoid conflicts.
-
-Some references require a default repository to be set. Use the extension configuration structure:
-
-```yml
-extensions:
-  github:
-    base-url: https://github.com # optional, defaults to https://github.com
-    repository-name: jlord/sheetsee.js
-```
-
-> [!WARNING]
->
-> The old top-level `repository-name` syntax is deprecated but still supported:
->
-> ```yml
-> repository-name: jlord/sheetsee.js  # deprecated
-> ```
-
-## Configuration
-
-### `base-url`
-
-Specifies the base URL for GitHub or GitHub Enterprise instances.
-Defaults to `https://github.com`.
-
-### `repository-name`
-
-Specifies the default GitHub repository in the format `owner/repository`.
-This is required for references that don't include the repository name (like `#123` or `GH-123`).
-
-## References
-
-Source: [Autolinked references and URLs - GitHub Docs](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls).
-
-### Mentioning Users
-
-| User/Organisation    | Raw reference  | Short link    |
-|----------------------|----------------|---------------|
-| User mention         | `@mcanouil`    | `@mcanouil`   |
-|----------------------|----------------|---------------|
-| Organisation mention | `@quarto-dev`  | `@quarto-dev` |
-
-### Issues and Pull Requests
-
-| Reference type                                                                             | Raw reference                                    | Short link                      |
-|--------------------------------------------------------------------------------------------|--------------------------------------------------|---------------------------------|
-| Issue, discussion, or pull request URL (***`repository-name` is optional!***)              | `https://github.com/jlord/sheetsee.js/issues/26` | `#26` or `lord/sheetsee.js#26`  |
-| `#` and issue, discussion, or pull request number (***`repository-name` is required!***)   | `#26`                                            | `#26`                           |
-| `GH-` and issue, discussion, or pull request number (***`repository-name` is required!***) | `GH-26`                                          | `GH-26`                         |
-| `Username/Repository#` and issue, discussion, or pull request number                       | `jlord/sheetsee.js#26`                           | `jlord/sheetsee.js#26`          |
-| `Organization_name/Repository#` and issue, discussion, or pull request number              | `github-linguist/linguist#4039`                  | `github-linguist/linguist#4039` |
-
-## Commit SHAs
-
-| Reference type                                    | Raw reference                                                                          | Short link                               |
-|---------------------------------------------------|----------------------------------------------------------------------------------------|------------------------------------------|
-| Commit URL (***`repository-name` is optional!***) | `https://github.com/jlord/sheetsee.js/commit/a5c3785ed8d6a35868bc169f07e40e889087fd2e` | `a5c3785` or `jlord/sheetsee.js@a5c3785` |
-| SHA (***`repository-name` is required!***)        | `a5c3785ed8d6a35868bc169f07e40e889087fd2e`                                             | `a5c3785`                                |
-| `User@SHA` (***Not supported!*** )                | `jlord@a5c3785ed8d6a35868bc169f07e40e889087fd2e`                                       | ***Not supported!***                     |
-| `Username/Repository@SHA`                         | `jlord/sheetsee.js@a5c3785ed8d6a35868bc169f07e40e889087fd2e`                           | `jlord/sheetsee.js@a5c3785`              |
-
-## Example
-
-Here is the source code for a minimal example: [example.qmd](example.qmd).
-
-Output of `example.qmd`:
-
-- [HTML](https://m.canouil.dev/quarto-github/)
+[MIT](https://github.com/mcanouil/quarto-github?tab=MIT-1-ov-file#readme).

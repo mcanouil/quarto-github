@@ -1,5 +1,5 @@
 ---
-title: "Autolinked references and URLs"
+title: "GitHub Extension For Quarto"
 subtitle: "Quarto Extension"
 author:
   - name: "Mickaël CANOUIL, _Ph.D._"
@@ -7,139 +7,31 @@ author:
     url: "https://mickael.canouil.fr"
 format:
   html:
-    output-file: index
     toc: true
-description: |
-  References to GitHub issues, pull requests, and commits are automatically shortened and converted into links.
-page-layout: full
 filters:
+  # post-quarto is required, so Quarto resolves its own cross-references first.
   - path: github
     at: post-quarto
----
-
-`github` is an extension for [Quarto](https://quarto.org) to automatically shortens and converts [GitHub references](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls) into links.
-
-:::: {.callout-warning}
-This extension has been superseded by the [Git Link extension](https://github.com/mcanouil/quarto-gitlink).
-Please update your project to use the new extension.
-
-To install the new extension, see the [installation instructions](https://github.com/mcanouil/quarto-gitlink?tab=readme-ov-file#installation).
-:::
-
-## Installation
-
-```bash
-quarto add mcanouil/quarto-github@1.5.1
-```
-
-This will install the extension under the `_extensions` subdirectory.
-
-If you're using version control, you will want to check in this directory.
-
-## Usage
-
-You can reference GitHub issues, pull requests, and commits in your content using GitHub short references.
-This Quarto extension automatically shortens and converts GitHub references into links.
-
-To activate the filter, add the following to your YAML front matter:
-
-- Old (<1.8.21):
-
-  ```yml
-  filters:
-    - quarto
-    - github
-  ```
-
-- New (>=1.8.21):
-
-  ```yml
-  filters:
-    - path: github
-      at: post-quarto
-  ```
-
-:::: {.callout-important}
-The extension must be run after Quarto's processing (*i.e.*, `at: post-quarto`) to ensure that references (*e.g.*, `@fig-my-beautiful-figure`) are processed first by Quarto, then by the GitHub filter to avoid conflicts.
-:::
-
-Some references require to define the default repository via the extension configuration or have an `origin` remote set in your Git configuration.
-
-```yml
 extensions:
   github:
-    base-url: https://github.com # optional, defaults to https://github.com
-    repository-name: mcanouil/quarto-github
+    repository-name: jlord/sheetsee.js
+    base-url: https://github.com
+---
+
+> This extension is superseded by [Git Link](https://m.canouil.dev/quarto-gitlink).
+
+References are written as they would be in a GitHub comment, and the filter turns them into links.
+
+```markdown
+Fixed in #26 and in jlord/sheetsee.js#26 as well
 ```
 
-:::: {.callout-warning}
-## Deprecated
+Fixed in #26 and in jlord/sheetsee.js#26 as well.
 
-The old top-level `repository-name` syntax is deprecated but still supported:
+A full URL is shortened: https://github.com/jlord/sheetsee.js/issues/26 .
 
-```yml
-repository-name: mcanouil/quarto-github
-```
-:::
+Mentions work too, for people and organisations: @mcanouil and @quarto-dev .
 
-## Mentioning users
+A reference has to be followed by a space, so `#26,` and `#26.` are left as plain text.
 
-+----------------------+----------------+-------------+
-| User/Organisation    | Raw reference  | Short link  |
-+======================+================+=============+
-|                      | ```txt         |             |
-| User mention         | @mcanouil      | @mcanouil   |
-|                      | ```            |             |
-+----------------------+----------------+-------------+
-|                      | ```txt         |             |
-| Organisation mention | @quarto-dev    | @quarto-dev |
-|                      | ```            |             |
-+----------------------+----------------+-------------+
-
-## Issues and pull requests
-
-+-------------------------------------------------------------------------------+----------------------------------------------------+----------------------------------------------------+
-| Reference type                                                                | Raw reference                                      | Short link                                         |
-+===============================================================================+====================================================+====================================================+
-|                                                                               | ```txt                                             |                                                    |
-| Issue, discussion, or pull request URL                                        | https://github.com/mcanouil/quarto-github/issues/3 | https://github.com/mcanouil/quarto-github/issues/3 |
-| ***`repository-name` is optional!***                                          | ```                                                |                                                    |
-+-------------------------------------------------------------------------------+----------------------------------------------------+----------------------------------------------------+
-|                                                                               | ```txt                                             |                                                    |
-| `#` and issue, discussion, or pull request number \                           | #3                                                 | #3                                                 |
-| ***`repository-name` is required!***                                          | ```                                                |                                                    |
-+-------------------------------------------------------------------------------+----------------------------------------------------+----------------------------------------------------+
-|                                                                               | ```txt                                             |                                                    |
-| `GH-` and issue, discussion, or pull request number \                         | GH-3                                               | GH-3                                               |
-| ***`repository-name` is required!***                                          | ```                                                |                                                    |
-+-------------------------------------------------------------------------------+----------------------------------------------------+----------------------------------------------------+
-|                                                                               | ```txt                                             |                                                    |
-| `Username/Repository#` and issue, discussion, or pull request number          | mcanouil/quarto-github#3                           | mcanouil/quarto-github#3                           |
-|                                                                               | ```                                                |                                                    |
-+-------------------------------------------------------------------------------+----------------------------------------------------+----------------------------------------------------+
-|                                                                               | ```txt                                             |                                                    |
-| `Organization_name/Repository#` and issue, discussion, or pull request number | github-linguist/linguist#4039                      | github-linguist/linguist#4039                      |
-|                                                                               | ```                                                |                                                    |
-+-------------------------------------------------------------------------------+----------------------------------------------------+----------------------------------------------------+
-
-## Commit SHAs
-
-+--------------------------------------+-------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------+
-| Reference type                       | Raw reference                                                                             | Short link                                                                                |
-+======================================+===========================================================================================+===========================================================================================+
-|                                      | ```txt                                                                                    |                                                                                           |
-| Commit URL                           | https://github.com/mcanouil/quarto-github/commit/0b2eb553779f0a7cd56d59c2ec102b8bb643e9c3 | https://github.com/mcanouil/quarto-github/commit/0b2eb553779f0a7cd56d59c2ec102b8bb643e9c3 |
-|                                      | ```                                                                                       |                                                                                           |
-+--------------------------------------+-------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------+
-|                                      | ```txt                                                                                    |                                                                                           |
-| SHA \                                | 0b2eb553779f0a7cd56d59c2ec102b8bb643e9c3                                                  | 0b2eb553779f0a7cd56d59c2ec102b8bb643e9c3                                                  |
-| ***`repository-name` is required!*** | ```                                                                                       |                                                                                           |
-+--------------------------------------+-------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------+
-|                                      | ```txt                                                                                    |                                                                                           |
-| `User@SHA` \                         | mcanouil@0b2eb553779f0a7cd56d59c2ec102b8bb643e9c3                                         | ***Not supported!***                                                                      |
-| ***Not supported!***                 | ```                                                                                       |                                                                                           |
-+--------------------------------------+-------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------+
-|                                      | ```txt                                                                                    |                                                                                           |
-| `Username/Repository@SHA`            | mcanouil/quarto-github@0b2eb553779f0a7cd56d59c2ec102b8bb643e9c3                           | mcanouil/quarto-github@0b2eb553779f0a7cd56d59c2ec102b8bb643e9c3                           |
-|                                      | ```                                                                                       |                                                                                           |
-+--------------------------------------+-------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------+
+Full documentation: <https://m.canouil.dev/quarto-github/>.
